@@ -12,6 +12,7 @@ export class UsersService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
   ) {}
+
   async createUser(user: CreateUserDto): Promise<User> {
     const existingdata = await this.userRepository.findOne({
       where: { email: user.email },
@@ -22,5 +23,34 @@ export class UsersService {
     const data = this.userRepository.create(user);
 
     return await this.userRepository.save(data);
+  }
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async findUserById(id: string): Promise<User | null> {
+    return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async updateUser(id: string, user: Partial<CreateUserDto>): Promise<User> {
+    const existingUser = await this.userRepository.findOne({ where: { id } });
+    if (!existingUser) {
+      throw new ConflictException('User not found');
+    }
+    const updatedUser = this.userRepository.merge(existingUser, user);
+    return await this.userRepository.save(updatedUser);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    const existingUser = await this.userRepository.findOne({ where: { id } });
+    if (!existingUser) {
+      throw new ConflictException('User not found');
+    }
+    await this.userRepository.remove(existingUser);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await this.userRepository.find();
   }
 }
