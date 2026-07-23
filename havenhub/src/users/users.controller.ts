@@ -44,7 +44,7 @@ export class UsersController {
     return this.userService.deleteUser(id);
   }
   @Get('health')
-  async healthCheck() {
-    return { status: 'OK' };
+  healthCheck() {
+    return { status: 'ok' };
   }
 }

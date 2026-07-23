@@ -20,7 +20,8 @@ export class UsersService {
     if (existingdata) {
       throw new ConflictException('User already exist');
     }
-    const data = this.userRepository.create(user);
+    const { password: password_hash, ...userData } = user;
+    const data = this.userRepository.create({ password_hash, ...userData });
 
     return await this.userRepository.save(data);
   }
