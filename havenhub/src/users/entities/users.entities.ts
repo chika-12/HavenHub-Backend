@@ -58,8 +58,20 @@ export class User {
   @Column({ type: 'boolean', default: false })
   is_email_verified!: boolean;
 
+  @Column({ type: 'varchar', nullable: true })
+  emailVerificationString!: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  emailVerificationExpires!: Date | null;
+
   @Column({ type: 'boolean', default: false })
   is_phone_verified!: boolean;
+
+  @Column({ type: 'varchar', nullable: true })
+  otp!: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  otpExpires!: Date | null;
 
   @Column({
     type: 'enum',
@@ -67,6 +79,15 @@ export class User {
     default: AccountStatus.ACTIVE,
   })
   account_status!: AccountStatus;
+
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  resetPasswordToken!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  resetPasswordTokenExpires!: Date | null;
 
   @Column({ type: 'timestamp', nullable: true })
   last_login!: Date;
@@ -79,4 +100,7 @@ export class User {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deleted_at!: Date;
+
+  @UpdateDateColumn({ type: 'varchar', nullable: true })
+  updated_by!: string;
 }
