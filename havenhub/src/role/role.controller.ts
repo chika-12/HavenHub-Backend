@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   UseGuards,
@@ -29,50 +30,62 @@ import { Roles } from 'src/auth/roles.decorator';
  * Note: this controller does NOT handle hotel-created custom roles —
  * those belong to a hotel-scoped roles endpoint/module, not here.
  */
-@Controller('role')
+@Controller('roles')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('SUPER_ADMIN')
 export class RoleController {
   constructor(private roleService: RoleService) {}
+
   @Post()
-  createRole(@Body() dot: CreateRoleDto) {
-    return this.roleService.create(dot);
+  create(@Body() dto: CreateRoleDto) {
+    return this.roleService.create(dto);
   }
-  //Assigns role to HavenHub staff
-  @Post('assign/system-role')
-  assignSystemRole(@Body() systemRole: CreateHavenhubStaffUserRoleDto) {
-    return this.roleService.createHavenHubStaffRoles(systemRole);
+
+  // Assigns a system role to a HavenHub staff member
+  @Post('assign')
+  assignSystemRole(@Body() dto: CreateHavenhubStaffUserRoleDto) {
+    return this.roleService.createHavenHubStaffRoles(dto);
   }
-  @Put('update-role/:id')
-  update_role(
-    @Body() dto: CreateRoleDto,
-    @Param('id') role_id: string,
-    @Request() req: { user: { sub: string } },
-  ) {
-    return this.roleService.update(role_id, dto, req.user.sub);
-  }
-  @Get('all')
-  findAllSystemRole() {
+
+  @Get()
+  findAllSystemRoles() {
     return this.roleService.findAllSystemRoles();
   }
-  @Get('find-role/:hotelId')
-  find_all_hotel_roles(@Param('hotelId') hotelId: string) {
-    return this.roleService.findRolesByHotel(hotelId);
-  }
-  @Get('all-havenhub-role')
-  haven_hub_assigned_role() {
+
+  @Get('havenhub-staff')
+  findAllHavenHubStaffRoles() {
     return this.roleService.findAllHavenHubStaff();
   }
-  @Get('find-one/:id')
-  findOne(@Param('id') role_id: string) {
-    return this.roleService.findOne(role_id);
+
+  @Get('hotel/:hotelId')
+  findAllHotelRoles(@Param('hotelId', ParseUUIDPipe) hotelId: string) {
+    return this.roleService.findRolesByHotel(hotelId);
   }
-  @Delete('delete/:id')
-  deleteRole(@Param('id') role_id: string) {
-    return this.roleService.remove(role_id);
+
+  @Get(':id')
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.roleService.findOne(id);
   }
-  @Delete('delete/system-role/user/:id')
-  delete_user_from_havenhub(@Param('id') userId: string) {
+
+  @Put(':id')
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CreateRoleDto,
+    @Request() req: { user: { sub: string } },
+  ) {
+    return this.roleService.update(id, dto, req.user.sub);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.roleService.remove(id);
+  }
+
+  // Removes all system-role assignments for a HavenHub staff member
+  // (Consider moving this to a users/staff controller — it's really
+  // about the user's role assignments, not the role entity itself.)
+  @Delete('staff/:userId/roles')
+  removeStaffRoles(@Param('userId', ParseUUIDPipe) userId: string) {
     return this.roleService.removeAllStaffRoles(userId);
   }
 }

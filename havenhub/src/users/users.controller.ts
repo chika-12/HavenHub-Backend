@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Controller,
   Post,
@@ -20,6 +18,11 @@ export class UsersController {
   async createUser(@Body() userdto: CreateUserDto) {
     return this.userService.createUser(userdto);
   }
+  @Get('get/all')
+  async getAllUsers() {
+    return this.userService.getAllUsers();
+  }
+
   @Get('get/:email')
   async getUserByEmail(@Param('email') email: string) {
     return this.userService.findUserByEmail(email);
@@ -28,10 +31,7 @@ export class UsersController {
   async getUserById(@Param('id') id: string) {
     return this.userService.findUserById(id);
   }
-  @Get('get/all')
-  async getAllUsers() {
-    return this.userService.getAllUsers();
-  }
+
   @Put('update/:id')
   async updateUser(
     @Param('id') id: string,
