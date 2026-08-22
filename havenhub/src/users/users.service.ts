@@ -32,15 +32,54 @@ export class UsersService {
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOne({
+      where: { email },
+      select: [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone_number',
+        'profile_photo',
+        'date_of_birth',
+        'gender',
+        'is_email_verified',
+        'is_phone_verified',
+        'account_status',
+        'last_login',
+        'created_at',
+        'updated_at',
+      ],
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }
     return user;
   }
 
-  async findUserById(id: string): Promise<User | null> {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async findUserById(userId: string): Promise<User | null> {
+    if (!userId) {
+      throw new NotFoundException('User not found');
+    }
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: [
+        'id',
+        'first_name',
+        'last_name',
+        'email',
+        'phone_number',
+        'profile_photo',
+        'date_of_birth',
+        'gender',
+        'is_email_verified',
+        'is_phone_verified',
+        'account_status',
+        'last_login',
+        'created_at',
+        'updated_at',
+      ],
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -112,6 +151,11 @@ export class UsersService {
     user.resetPasswordToken = hashedToken;
     user.resetPasswordTokenExpires = expiresIn;
     return await this.userRepository.save(user);
+  }
+  async findUserByEmailWithPassword(email: string): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: { email },
+    });
   }
   async findByResetToken(resetToken: string): Promise<User | null> {
     const user = await this.userRepository.findOne({

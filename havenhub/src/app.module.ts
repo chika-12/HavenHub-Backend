@@ -7,6 +7,9 @@ import { EmailModule } from './email/email.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { RoleModule } from './role/role.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AddressModule } from './address/address.module';
+import { HotelModule } from './hotel/hotel.module';
+import { OrganizationModule } from './organization/organization.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +34,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     EmailModule,
     PermissionsModule,
     RoleModule,
+    AddressModule,
+    HotelModule,
+    OrganizationModule,
   ],
   controllers: [],
   providers: [],

@@ -24,6 +24,6 @@ import { Role } from 'src/role/entities/role.entity';
     UsersModule,
     EmailModule,
   ],
-  exports: [AuthService, RolesGuard, TypeOrmModule],
+  exports: [AuthService, RolesGuard, TypeOrmModule, JwtStrategy],
 })
 export class AuthModule {}

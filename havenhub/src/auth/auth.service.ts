@@ -159,7 +159,9 @@ export class AuthService {
   async login(
     loginData: LoginDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userService.findUserByEmail(loginData.email);
+    const user = await this.userService.findUserByEmailWithPassword(
+      loginData.email,
+    );
     if (!user) {
       throw new NotFoundException('Invalid Email or Password');
     }

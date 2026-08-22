@@ -33,7 +33,7 @@ export class RolesGuard implements CanActivate {
     if (!request.user) {
       throw new NotFoundException('User does not exist');
     }
-    const userId = request.user.userId ?? request.user.sub;
+    const userId = request.user.sub;
     if (!userId) throw new ForbiddenException('Not authenticated');
 
     const staffRoles = await this.staffRoleRepo.find({
