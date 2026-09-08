@@ -1,9 +1,12 @@
+import { Hotel } from 'src/hotel/entities/hotel.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('roles')
@@ -15,13 +18,14 @@ export class Role {
   name!: string;
 
   @Column({ type: 'text', nullable: true })
-  description!: string;
+  description?: string;
 
   @Column({ type: 'boolean', default: false })
   is_system_role!: boolean;
 
-  @Column({ type: 'uuid', nullable: true })
-  hotel_id!: string | null;
+  @ManyToOne(() => Hotel, { nullable: true })
+  @JoinColumn({ name: 'hotel_id' })
+  hotel?: Hotel;
 
   @CreateDateColumn()
   created_at!: Date;

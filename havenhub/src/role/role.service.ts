@@ -36,7 +36,7 @@ export class RoleService {
     const existing = await this.roleRepository.findOne({
       where: dto.is_system_role
         ? { name: dto.name, is_system_role: true }
-        : { name: dto.name, hotel_id: dto.hotel_id },
+        : { name: dto.name, hotel: { id: dto.hotel_id } },
     });
     if (existing) {
       throw new ConflictException(
@@ -47,7 +47,9 @@ export class RoleService {
     }
 
     const role = this.roleRepository.create(dto);
-    role.hotel_id = dto.is_system_role ? null : (dto.hotel_id ?? null);
+    role.hotel = dto.is_system_role
+      ? undefined
+      : ({ id: dto.hotel_id } as NonNullable<typeof role.hotel>);
 
     return this.roleRepository.save(role);
   }
@@ -57,7 +59,7 @@ export class RoleService {
 
   /** All custom roles belonging to a specific hotel. */
   async findRolesByHotel(hotelId: string): Promise<Role[]> {
-    return this.roleRepository.find({ where: { hotel_id: hotelId } });
+    return this.roleRepository.find({ where: { hotel: { id: hotelId } } });
   }
   async findOne(id: string): Promise<Role> {
     const role = await this.roleRepository.findOne({ where: { id } });
@@ -86,7 +88,7 @@ export class RoleService {
     if (dto.name && dto.name !== role.name) {
       const where = role.is_system_role
         ? { name: dto.name, is_system_role: true }
-        : { name: dto.name, hotel_id: role.hotel_id ?? undefined };
+        : { name: dto.name, hotel_id: role.hotel ?? undefined };
       const existing = await this.roleRepository.findOne({ where });
       if (existing) {
         throw new ConflictException(

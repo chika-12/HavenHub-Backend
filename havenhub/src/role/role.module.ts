@@ -13,5 +13,6 @@ import { HavenhubStaffUserRole } from './entities/havenhubRole.entity';
   ],
   providers: [RoleService],
   controllers: [RoleController],
+  exports: [RoleService],
 })
 export class RoleModule {}

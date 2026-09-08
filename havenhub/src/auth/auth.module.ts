@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HavenhubStaffUserRole } from '../role/entities/havenhubRole.entity';
 import { Role } from 'src/role/entities/role.entity';
 
+
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, RolesGuard],

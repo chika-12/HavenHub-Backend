@@ -10,6 +10,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AddressModule } from './address/address.module';
 import { HotelModule } from './hotel/hotel.module';
 import { OrganizationModule } from './organization/organization.module';
+import { RolePermissionsModule } from './role-permissions/role-permissions.module';
+import { HotelStaffModule } from './hotel-staff/hotel-staff.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +39,8 @@ import { OrganizationModule } from './organization/organization.module';
     AddressModule,
     HotelModule,
     OrganizationModule,
+    RolePermissionsModule,
+    HotelStaffModule,
   ],
   controllers: [],
   providers: [],
