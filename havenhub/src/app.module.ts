@@ -12,6 +12,9 @@ import { HotelModule } from './hotel/hotel.module';
 import { OrganizationModule } from './organization/organization.module';
 import { RolePermissionsModule } from './role-permissions/role-permissions.module';
 import { HotelStaffModule } from './hotel-staff/hotel-staff.module';
+import { RoomsModule } from './rooms/rooms.module';
+import { BookingModule } from './booking/booking.module';
+import { PricingRuleModule } from './pricing_rule/pricing_rule.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +44,9 @@ import { HotelStaffModule } from './hotel-staff/hotel-staff.module';
     OrganizationModule,
     RolePermissionsModule,
     HotelStaffModule,
+    RoomsModule,
+    BookingModule,
+    PricingRuleModule,
   ],
   controllers: [],
   providers: [],

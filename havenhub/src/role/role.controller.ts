@@ -16,6 +16,7 @@ import { CreateHavenhubStaffUserRoleDto } from './dto/havenHubDto';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 /**
  * RoleController
@@ -37,8 +38,19 @@ export class RoleController {
   constructor(private roleService: RoleService) {}
 
   @Post()
-  create(@Body() dto: CreateRoleDto) {
-    return this.roleService.create(dto);
+  async createSystemRole(
+    @Body() data: CreateRoleDto,
+    @CurrentUser() user: { sub: string },
+  ) {
+    return await this.roleService.createSystemRole(data, user.sub);
+  }
+  @Post('/:hotelId')
+  create(
+    @Body() dto: CreateRoleDto,
+    @Param('hotelId') hotelId: string,
+    @CurrentUser() user: { sub: string },
+  ) {
+    return this.roleService.createHotelRole(dto, user.sub, hotelId);
   }
 
   // Assigns a system role to a HavenHub staff member
@@ -63,22 +75,26 @@ export class RoleController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.roleService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string, hotelId: string) {
+    return this.roleService.findOne(id, hotelId);
   }
 
-  @Put(':id')
+  @Put(':id/update/:hoteId')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: CreateRoleDto,
     @Request() req: { user: { sub: string } },
+    @Param('hotelId') hotelId: string,
   ) {
-    return this.roleService.update(id, dto, req.user.sub);
+    return this.roleService.update(id, dto, hotelId, req.user.sub);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.roleService.remove(id);
+  @Delete(':id/delete/:hotelId')
+  remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Param('hotelId') hotelId: string,
+  ) {
+    return this.roleService.remove(id, hotelId);
   }
 
   // Removes all system-role assignments for a HavenHub staff member

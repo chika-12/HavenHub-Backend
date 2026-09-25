@@ -13,12 +13,14 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 export class RolePermissionsController {
   constructor(private readonly rolePermissionService: RolePermissionsService) {}
 
-  @Post()
+  @Post('/:hotelId')
   async create(
     @Body() data: RolePermissionDto,
     @CurrentUser() user: { sub: string },
+    @Param('hotelId') hotelId: string,
   ) {
-    return this.rolePermissionService.create(data, user.sub);
+    console.log(hotelId);
+    return this.rolePermissionService.create(data, user.sub, hotelId);
   }
 
   @Get('/:id')
@@ -26,13 +28,19 @@ export class RolePermissionsController {
     return this.rolePermissionService.findOne(rolePerm);
   }
 
-  @Patch('/:id/update')
+  @Patch('/:id/update/:hotelId')
   async update(
     @Body() data: Partial<RolePermissionDto>,
     @CurrentUser() user: { sub: string },
     @Param('id') rolePermId: string,
+    @Param('hotelId') hotelId: string,
   ) {
-    return this.rolePermissionService.update(rolePermId, data, user.sub);
+    return this.rolePermissionService.update(
+      rolePermId,
+      data,
+      user.sub,
+      hotelId,
+    );
   }
 
   @Patch('/:id/deactivate')

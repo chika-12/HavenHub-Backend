@@ -1,10 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { AddressService } from 'src/address/address.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Hotel } from './entities/hotel.entity';
 import { CreateHotelDto } from './dto/createHotel.dto';
 import { UsersService } from 'src/users/users.service';
+import { HotelStaff } from 'src/hotel-staff/entities/hotelStaff.entities';
 
 @Injectable()
 export class HotelService {
@@ -37,4 +42,17 @@ export class HotelService {
       return hotelRepo.save(hotel);
     });
   }
+  async findOne(hotelId: string): Promise<Hotel> {
+    const hotel = await this.hotelRepository.findOne({
+      where: { id: hotelId },
+    });
+    if (!hotel) {
+      throw new NotFoundException('Hotel not found');
+    }
+    if (hotel.status !== 'active') {
+      throw new ForbiddenException('This hotel is not active');
+    }
+    return hotel;
+  }
 }
+

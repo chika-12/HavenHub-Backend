@@ -6,7 +6,7 @@ import { RolePermissionEntity } from './entity/rolePermissions.entity';
 import { RoleModule } from 'src/role/role.module';
 import { PermissionsModule } from 'src/permissions/permissions.module';
 import { UsersModule } from 'src/users/users.module';
-import { AuthModule } from 'src/auth/auth.module';
+
 
 @Module({
   imports: [
@@ -14,7 +14,6 @@ import { AuthModule } from 'src/auth/auth.module';
     RoleModule,
     PermissionsModule,
     UsersModule,
-    AuthModule,
   ],
   providers: [RolePermissionsService],
   controllers: [RolePermissionsController],

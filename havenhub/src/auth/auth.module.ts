@@ -10,13 +10,15 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HavenhubStaffUserRole } from '../role/entities/havenhubRole.entity';
 import { Role } from 'src/role/entities/role.entity';
-
+import { RolePermissionsModule } from 'src/role-permissions/role-permissions.module';
+import { HotelStaffModule } from 'src/hotel-staff/hotel-staff.module';
+import { RoleModule } from 'src/role/role.module';
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, RolesGuard],
   imports: [
-    TypeOrmModule.forFeature([HavenhubStaffUserRole, Role]),
+    //TypeOrmModule.forFeature([HavenhubStaffUserRole, Role]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_ACCESS_SECRET, // or however you're configuring it
@@ -24,7 +26,10 @@ import { Role } from 'src/role/entities/role.entity';
     }),
     UsersModule,
     EmailModule,
+    RoleModule,
+    RolePermissionsModule,
+    HotelStaffModule,
   ],
-  exports: [AuthService, RolesGuard, TypeOrmModule, JwtStrategy],
+  exports: [AuthService, RolesGuard, JwtStrategy],
 })
 export class AuthModule {}

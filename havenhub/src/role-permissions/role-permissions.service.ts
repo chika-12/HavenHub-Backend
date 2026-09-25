@@ -19,8 +19,9 @@ export class RolePermissionsService {
   async create(
     data: RolePermissionDto,
     userId: string,
+    hotelId: string,
   ): Promise<RolePermissionEntity> {
-    const roleCheck = await this.roleService.findOne(data.roleId);
+    const roleCheck = await this.roleService.findOne(data.roleId, hotelId);
 
     if (!roleCheck) {
       throw new NotFoundException('Role does not exist');
@@ -49,18 +50,29 @@ export class RolePermissionsService {
     }
     return entity;
   }
+  async hasPermission(
+    roleId: string,
+    permissionName: string,
+  ): Promise<boolean> {
+    const match = await this.rolePermissionsRepository.findOne({
+      where: {
+        role: { id: roleId },
+        permission: { permission_name: permissionName },
+        isActive: true,
+      },
+    });
+    return !!match;
+  }
   async update(
     rolePerm: string,
     data: Partial<RolePermissionDto>,
     userId: string,
+    hotelId: string,
   ): Promise<RolePermissionEntity> {
     const rolePermission = await this.findOne(rolePerm);
 
     if (data.roleId) {
-      const role = await this.roleService.findOne(data.roleId);
-      if (!role) {
-        throw new NotFoundException('Role does not exist');
-      }
+      const role = await this.roleService.findOne(data.roleId, hotelId);
       rolePermission.role = role;
     }
 

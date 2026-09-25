@@ -10,14 +10,14 @@ import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ROLES_KEY } from '../roles.decorator';
-import { HavenhubStaffUserRole } from '../../role/entities/havenhubRole.entity';
+//import { HavenhubStaffUserRole } from '../../role/entities/havenhubRole.entity'
+import { RoleService } from 'src/role/role.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    @InjectRepository(HavenhubStaffUserRole)
-    private staffRoleRepo: Repository<HavenhubStaffUserRole>,
+    private staffRoleRepo: RoleService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -36,10 +36,7 @@ export class RolesGuard implements CanActivate {
     const userId = request.user.sub;
     if (!userId) throw new ForbiddenException('Not authenticated');
 
-    const staffRoles = await this.staffRoleRepo.find({
-      where: { user_id: userId },
-      relations: ['role'],
-    });
+    const staffRoles = await this.staffRoleRepo.getUserSystemRoles(userId);
     const hasRequiredRole = staffRoles.some(
       (sr) => sr.role.is_system_role && requiredRoles.includes(sr.role.name),
     );
